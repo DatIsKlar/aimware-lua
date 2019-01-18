@@ -37,7 +37,7 @@ local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware"
 local Standing = false
 local Moving = false
 local autoupdate = gui.Checkbox(box, "autoupdate", "Auto-Update", false)
-
+local VERSION_NUMBER = "1.0.2";
 
 local function get_abs_fps()
 
@@ -401,7 +401,7 @@ local NETWORK_GET_ADDR = "http://shady-aimware-api.cf/translate";
 local SCRIPT_FILE_NAME = "indicator.lua";
 local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/indicator.lua";
 local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/version.txt";
-local VERSION_NUMBER = "1.0.2";
+
 
 
 local update_available = false;
