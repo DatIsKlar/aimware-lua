@@ -36,7 +36,7 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-local VERSION_NUMBER = 1;
+local VERSION_NUMBER = 2;
 
 local function get_abs_fps()
 
@@ -437,7 +437,7 @@ function indicator_draw_event()
         if (gui.GetValue("lua_allow_http") == false) then
 		draw.SetFont(update_font)
             draw.Color(255, 0, 0, 255);
-            draw.Text(0, 0, "[TRANSLATOR] Please enable Lua HTTP Connections in your settings tab to use this script");
+            draw.Text(0, 0, "[Indicator] Please enable Lua HTTP Connections in your settings tab to use this script");
             return;
         end
 
