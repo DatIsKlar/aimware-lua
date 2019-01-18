@@ -36,7 +36,7 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-local VERSION_NUMBER = "1.0.3";
+local VERSION_NUMBER = 1;
 
 local function get_abs_fps()
 
@@ -442,7 +442,7 @@ function indicator_draw_event()
         end
 
         version_check_done = true;
-        local version = http.Get(VERSION_FILE_ADDR);
+        local version = tonumber(http.Get(VERSION_FILE_ADDR));
         if (version ~= VERSION_NUMBER) then
             update_available = true;
         end
