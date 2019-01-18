@@ -13,7 +13,7 @@ local fakea = 0
 local aamode = "false"
 local aaalpha = 0
 local vis_main = gui.Reference('VISUALS', "MISC", "Assistance")
-local box = gui.Groupbox(vis_main, "Indicator", 0, 450, 213, 630)
+local box = gui.Groupbox(vis_main, "Indicator", 0, 350, 213, 700)
 local Fpsincheck = gui.Checkbox(box, "Fpsin", "FPS-Indicator", false);
 local Fpsvalue = gui.Checkbox(box, "Fps_value", "FPS-Value", false);
 local Fps_t = gui.Combobox(box, "Fps_t", "FPS Warning", "Off", "If below cmdrate", "If below Value");
@@ -26,6 +26,7 @@ local Flagcheck = gui.Checkbox(box, "Falg", "FLAG-Mode", false);
 local Flagvalue = gui.Checkbox(box, "Falg_value", "FLAG-Value", false)
 local Overridecheck = gui.Checkbox(box, "Override_key", "Override-Inidcator", false)
 local speedcheck = gui.Checkbox(box, "Speed", "Speed-Indicator", false)
+local aa_mode = gui.Checkbox(box, "aa", "Desync-Indicator", false)
 local active_x = gui.Checkbox(box, "active_x", "Custom-X", false)
 local wight_slider = gui.Slider(box, "wight_slider", "X Pos", 30, 10, 1700)
 local active_y = gui.Checkbox(box, "active_y", "Custom-Y", false)
@@ -37,6 +38,7 @@ local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware"
 local Standing = false
 local Moving = false
 local VERSION_NUMBER = 2;
+
 
 local function get_abs_fps()
 
@@ -117,6 +119,7 @@ local function drawing_stuff()
     local mode = Fps_t:GetValue()
     local fps_rest = fps_res:GetValue()
 	local fps_rest_val = fps_slider:GetValue()
+	local aain = aa_mode:GetValue()
     if main_active then
 	
 	if fps_rest then 
@@ -316,6 +319,29 @@ local function drawing_stuff()
                 TextAdd("Flag " .. fakelagmode .. fill1 .. fakelag_val, f, l, g, 255)
                 -- draw.SetFont(normal)
             end
+			
+			if aain then 
+			local mode_de = {"Off","Still","Balance","Stretch","Jitter"}
+			local stand_de = gui.GetValue("rbot_antiaim_stand_desync")
+			local move_de = gui.GetValue("rbot_antiaim_move_desync")
+			 de = "Desync "
+
+            if Standing and stand_de > 0 then 
+			 mode_d = mode_de[stand_de+1]
+			r2,g2,b2,a2 = 126, 183, 50, 255
+			 elseif Moving and move_de > 0 then
+			 mode_d = mode_de[move_de+1]
+			r2,g2,b2,a2=  126, 183, 50, 255
+			 elseif Standing and stand_de == 0 then 
+			 r2,g2,b2,a2= 255, 0, 0, 255
+			 mode_d = "Off"
+			 elseif Moving and move_de == 0 then
+			  r2,g2,b2,a2= 255, 0, 0, 255
+			 mode_d = "Off"
+			 end
+			  TextAdd(de..mode_d,r2,g2,b2,a2)
+			end
+			
 
             if overrideactive and override_key ~= 0 and Alive then
 
