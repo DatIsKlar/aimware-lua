@@ -36,7 +36,6 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-local autoupdate = gui.Checkbox(box, "autoupdate", "Auto-Update", false)
 local VERSION_NUMBER = "1.0.2";
 
 local function get_abs_fps()
@@ -410,9 +409,9 @@ local update_downloaded = false;
 
 local update_font = draw.CreateFont("Arial",15,15)
 function drawEventHandler()
-local auto_update = autoupdate:GetValue()
 
-if auto_update then
+
+
     if (update_available and not update_downloaded) then
         if (gui.GetValue("lua_allow_cfg") == false) then
 		draw.SetFont(update_font)
@@ -451,7 +450,7 @@ if auto_update then
 		draw.SetFont(normal)
 end
 end
-end
+
 print("credit for auto-update goes to ShadyRetard")
 
 callbacks.Register("Draw", "translate_draw_event", drawEventHandler);
