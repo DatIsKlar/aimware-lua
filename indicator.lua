@@ -408,7 +408,7 @@ local version_check_done = false;
 local update_downloaded = false;
 
 local update_font = draw.CreateFont("Arial",15,15)
-function drawEventHandler()
+function indicator_draw_event()
 
 
 
@@ -453,4 +453,4 @@ end
 
 print("credit for auto-update goes to ShadyRetard")
 
-callbacks.Register("Draw", "translate_draw_event", drawEventHandler);
+callbacks.Register("Draw", "indicator_draw_event", indicator_draw_event);
