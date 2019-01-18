@@ -13,7 +13,7 @@ local fakea = 0
 local aamode = "false"
 local aaalpha = 0
 local vis_main = gui.Reference('VISUALS', "MISC", "Assistance")
-local box = gui.Groupbox(vis_main, "Indicator", 0, 400, 213, 630)
+local box = gui.Groupbox(vis_main, "Indicator", 0, 450, 213, 630)
 local Fpsincheck = gui.Checkbox(box, "Fpsin", "FPS-Indicator", false);
 local Fpsvalue = gui.Checkbox(box, "Fps_value", "FPS-Value", false);
 local Fps_t = gui.Combobox(box, "Fps_t", "FPS Warning", "Off", "If below cmdrate", "If below Value");
@@ -36,7 +36,7 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-
+local autoupdate = gui.Checkbox(box, "autoupdate", "Auto-Update", false)
 
 
 local function get_abs_fps()
@@ -395,3 +395,63 @@ function TextDrawing()
 end
 
 callbacks.Register("Draw", "drawing_stuff", drawing_stuff);
+
+
+local NETWORK_GET_ADDR = "http://shady-aimware-api.cf/translate";
+local SCRIPT_FILE_NAME = "indicator.lua";
+local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/indicator.lua";
+local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/version.txt";
+local VERSION_NUMBER = "1.0.2";
+
+
+local update_available = false;
+local version_check_done = false;
+local update_downloaded = false;
+
+local update_font = draw.CreateFont("Arial",15,15)
+function drawEventHandler()
+local auto_update = autoupdate:GetValue()
+
+if auto_update then
+    if (update_available and not update_downloaded) then
+        if (gui.GetValue("lua_allow_cfg") == false) then
+		draw.SetFont(update_font)
+            draw.Color(255, 0, 0, 255);
+            draw.Text(0, 0, "[Indicator] An update is available");
+        else
+            local new_version_content = http.Get(SCRIPT_FILE_ADDR);
+            local old_script = file.Open(SCRIPT_FILE_NAME, "w");
+            old_script:Write(new_version_content);
+            old_script:Close();
+            update_available = false;
+            update_downloaded = true;
+        end
+    end
+
+    if (update_downloaded) then
+	draw.SetFont(update_font)
+        draw.Color(255, 0, 0, 255);
+        draw.Text(0, 0, "[Indicator] An update has automatically been downloaded, reload the script");
+        return;
+    end
+
+    if (not version_check_done) then
+        if (gui.GetValue("lua_allow_http") == false) then
+		draw.SetFont(update_font)
+            draw.Color(255, 0, 0, 255);
+            draw.Text(0, 0, "[TRANSLATOR] Please enable Lua HTTP Connections in your settings tab to use this script");
+            return;
+        end
+
+        version_check_done = true;
+        local version = http.Get(VERSION_FILE_ADDR);
+        if (version ~= VERSION_NUMBER) then
+            update_available = true;
+        end
+		draw.Font(normal)
+end
+end
+end
+print("credit for auto-update goes to ShadyRetard")
+
+callbacks.Register("Draw", "translate_draw_event", drawEventHandler);
