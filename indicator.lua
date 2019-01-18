@@ -396,7 +396,6 @@ end
 callbacks.Register("Draw", "drawing_stuff", drawing_stuff);
 
 
-local NETWORK_GET_ADDR = "http://shady-aimware-api.cf/translate";
 local SCRIPT_FILE_NAME = "indicator.lua";
 local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/indicator.lua";
 local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/version_indicator.txt";
