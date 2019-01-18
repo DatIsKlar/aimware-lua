@@ -36,7 +36,7 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-local VERSION_NUMBER = "1.0.2";
+local VERSION_NUMBER = "1.0.3";
 
 local function get_abs_fps()
 
