@@ -309,7 +309,7 @@ end
 local SCRIPT_FILE_NAME = "manualaa.lua";
 local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/manualaa.lua";
 local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/maversion.txt";
-local VERSION_NUMBER = 2;
+local VERSION_NUMBER = 3;
 
 
 local update_available = false;
@@ -325,7 +325,7 @@ function manual_draw_event()
         if (gui.GetValue("lua_allow_cfg") == false) then
             draw.SetFont(update_font)
             draw.Color(255, 0, 0, 255);
-            draw.Text(0, 0, "[AA] An update is available");
+            draw.Text(0, 20, "[AA] An update is available");
         else
             local new_version_content = http.Get(SCRIPT_FILE_ADDR);
             local old_script = file.Open(SCRIPT_FILE_NAME, "w");
@@ -339,7 +339,7 @@ function manual_draw_event()
     if (update_downloaded) then
         draw.SetFont(update_font)
         draw.Color(255, 0, 0, 255);
-        draw.Text(0, 0, "[AA] An update has automatically been downloaded, reload the script");
+        draw.Text(0, 20, "[AA] An update has automatically been downloaded, reload the script");
         return;
     end
 
@@ -347,7 +347,7 @@ function manual_draw_event()
         if (gui.GetValue("lua_allow_http") == false) then
             draw.SetFont(update_font)
             draw.Color(255, 0, 0, 255);
-            draw.Text(0, 0, "[Manual-AA] Please enable Lua HTTP Connections in your settings tab to use this script");
+            draw.Text(0, 20, "[Manual-AA] Please enable Lua HTTP Connections in your settings tab to use this script");
             return;
         end
 
