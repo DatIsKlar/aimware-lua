@@ -325,7 +325,7 @@ function manual_draw_event()
         if (gui.GetValue("lua_allow_cfg") == false) then
             draw.SetFont(update_font)
             draw.Color(255, 0, 0, 255);
-            draw.Text(0, 0, "[Indicator] An update is available");
+            draw.Text(0, 0, "[AA] An update is available");
         else
             local new_version_content = http.Get(SCRIPT_FILE_ADDR);
             local old_script = file.Open(SCRIPT_FILE_NAME, "w");
@@ -339,7 +339,7 @@ function manual_draw_event()
     if (update_downloaded) then
         draw.SetFont(update_font)
         draw.Color(255, 0, 0, 255);
-        draw.Text(0, 0, "[Indicator] An update has automatically been downloaded, reload the script");
+        draw.Text(0, 0, "[AA] An update has automatically been downloaded, reload the script");
         return;
     end
 
@@ -347,7 +347,7 @@ function manual_draw_event()
         if (gui.GetValue("lua_allow_http") == false) then
             draw.SetFont(update_font)
             draw.Color(255, 0, 0, 255);
-            draw.Text(0, 0, "[Indicator] Please enable Lua HTTP Connections in your settings tab to use this script");
+            draw.Text(0, 0, "[Manual-AA] Please enable Lua HTTP Connections in your settings tab to use this script");
             return;
         end
 
