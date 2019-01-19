@@ -433,7 +433,7 @@ callbacks.Register("Draw", "drawing_stuff", drawing_stuff);
 local SCRIPT_FILE_NAME = "indicator.lua";
 local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/indicator.lua";
 local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/indversion.txt";
-
+local update_link = "https://raw.githubusercontent.com/DatIsKlar/update_log-aw/master/update_log_ind"
 
 
 local update_available = false;
@@ -453,6 +453,8 @@ function indicator_draw_event()
         else
             local new_version_content = http.Get(SCRIPT_FILE_ADDR);
             local old_script = file.Open(SCRIPT_FILE_NAME, "w");
+			local update_log = http.Get(update_link)
+			print(update_log)
             old_script:Write(new_version_content);
             old_script:Close();
             update_available = false;
