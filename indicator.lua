@@ -37,7 +37,7 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-local VERSION_NUMBER = 2;
+local VERSION_NUMBER = 3;
 
 
 local function get_abs_fps()
@@ -118,18 +118,18 @@ local function drawing_stuff()
     local Fps_value_ind = Fpsvalue:GetValue()
     local mode = Fps_t:GetValue()
     local fps_rest = fps_res:GetValue()
-	local fps_rest_val = fps_slider:GetValue()
-	local aain = aa_mode:GetValue()
+    local fps_rest_val = fps_slider:GetValue()
+    local aain = aa_mode:GetValue()
     if main_active then
-	
-	if fps_rest then 
-	client.Command("fps_max "..fps_rest_val,true)
-	end
-	
+
+        if fps_rest then
+            client.Command("fps_max " .. fps_rest_val, true)
+        end
+
         if mode == 0 then
             r1, g1, b1 = 126, 183, 50
         end
-		
+
 
         if mode == 2 then
             if get_abs_fps() > fps_value then
@@ -141,7 +141,8 @@ local function drawing_stuff()
 
         if mode == 1 then
             tick = tonumber(client.GetConVar("sv_mincmdrate"))
-            if get_abs_fps() < tick then
+		
+		if get_abs_fps() < tick then
                 r1, g1, b1 = 255, 0, 0
             else
                 r1, g1, b1 = 126, 183, 50
@@ -319,29 +320,29 @@ local function drawing_stuff()
                 TextAdd("Flag " .. fakelagmode .. fill1 .. fakelag_val, f, l, g, 255)
                 -- draw.SetFont(normal)
             end
-			
-			if aain then 
-			local mode_de = {"Off","Still","Balance","Stretch","Jitter"}
-			local stand_de = gui.GetValue("rbot_antiaim_stand_desync")
-			local move_de = gui.GetValue("rbot_antiaim_move_desync")
-			 de = "Desync "
 
-            if Standing and stand_de > 0 then 
-			 mode_d = mode_de[stand_de+1]
-			r2,g2,b2,a2 = 126, 183, 50, 255
-			 elseif Moving and move_de > 0 then
-			 mode_d = mode_de[move_de+1]
-			r2,g2,b2,a2=  126, 183, 50, 255
-			 elseif Standing and stand_de == 0 then 
-			 r2,g2,b2,a2= 255, 0, 0, 255
-			 mode_d = "Off"
-			 elseif Moving and move_de == 0 then
-			  r2,g2,b2,a2= 255, 0, 0, 255
-			 mode_d = "Off"
-			 end
-			  TextAdd(de..mode_d,r2,g2,b2,a2)
-			end
-			
+            if aain then
+                local mode_de = { "Off", "Still", "Balance", "Stretch", "Jitter" }
+                local stand_de = gui.GetValue("rbot_antiaim_stand_desync")
+                local move_de = gui.GetValue("rbot_antiaim_move_desync")
+                de = "Desync "
+
+                if Standing and stand_de > 0 then
+                    mode_d = mode_de[stand_de + 1]
+                    r2, g2, b2, a2 = 245, 198, 10, 255
+                elseif Moving and move_de > 0 then
+                    mode_d = mode_de[move_de + 1]
+                    r2, g2, b2, a2 = 245, 198, 10, 255
+                elseif Standing and stand_de == 0 then
+                    r2, g2, b2, a2 = 255, 0, 0, 255
+                    mode_d = "Off"
+                elseif Moving and move_de == 0 then
+                    r2, g2, b2, a2 = 255, 0, 0, 255
+                    mode_d = "Off"
+                end
+                TextAdd(de .. mode_d, r2, g2, b2, a2)
+            end
+
 
             if overrideactive and override_key ~= 0 and Alive then
 
@@ -357,7 +358,7 @@ local function drawing_stuff()
             end
 
             if speed_active and Alive then
-                TextAdd("Velocity " .. math.floor(moving()+0.5), 255, 255, 0, 255)
+                TextAdd("Velocity " .. math.floor(moving() + 0.5), 255, 255, 0, 255)
             end
         end
     end
@@ -432,14 +433,14 @@ local update_available = false;
 local version_check_done = false;
 local update_downloaded = false;
 
-local update_font = draw.CreateFont("Arial",15,15)
+local update_font = draw.CreateFont("Arial", 15, 15)
 function indicator_draw_event()
 
 
 
     if (update_available and not update_downloaded) then
         if (gui.GetValue("lua_allow_cfg") == false) then
-		draw.SetFont(update_font)
+            draw.SetFont(update_font)
             draw.Color(255, 0, 0, 255);
             draw.Text(0, 0, "[Indicator] An update is available");
         else
@@ -453,7 +454,7 @@ function indicator_draw_event()
     end
 
     if (update_downloaded) then
-	draw.SetFont(update_font)
+        draw.SetFont(update_font)
         draw.Color(255, 0, 0, 255);
         draw.Text(0, 0, "[Indicator] An update has automatically been downloaded, reload the script");
         return;
@@ -461,7 +462,7 @@ function indicator_draw_event()
 
     if (not version_check_done) then
         if (gui.GetValue("lua_allow_http") == false) then
-		draw.SetFont(update_font)
+            draw.SetFont(update_font)
             draw.Color(255, 0, 0, 255);
             draw.Text(0, 0, "[Indicator] Please enable Lua HTTP Connections in your settings tab to use this script");
             return;
@@ -472,8 +473,8 @@ function indicator_draw_event()
         if (version ~= VERSION_NUMBER) then
             update_available = true;
         end
-		draw.SetFont(normal)
-end
+        draw.SetFont(normal)
+    end
 end
 
 print("credit for auto-update goes to ShadyRetard")
