@@ -21,7 +21,7 @@ local fps_slider = gui.Slider(box, "Fps_slider", "FPS Warning Value", 80, 10, 14
 local fps_res = gui.Checkbox(box, "Fps_res", "FPS Restrict", false);
 local fps_slider = gui.Slider(box, "rest_slider", "FPS Restrict Value", 144, 10, 400)
 local Pingincheck = gui.Checkbox(box, "Pingin", "Ping-Indicator", false);
-local ping_val = gui.Checkbox(box, "Pingval", "Ping-Velue", false);
+local ping_val = gui.Checkbox(box, "Pingval", "Ping-Value", false);
 local ping_slider = gui.Slider(box, "Ping_slider", "Ping Warning", 40, 10, 200)
 local Flagcheck = gui.Checkbox(box, "Falg", "FLAG-Mode", false);
 local Flagvalue = gui.Checkbox(box, "Falg_value", "FLAG-Value", false)
@@ -38,7 +38,7 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-local VERSION_NUMBER = 5;
+local VERSION_NUMBER = 6;
 
 
 local function get_abs_fps()
