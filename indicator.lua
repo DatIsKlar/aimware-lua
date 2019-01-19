@@ -134,8 +134,6 @@ local function drawing_stuff()
 
 
         if mode == 2 then
-		print(get_abs_fps())
-		print(fps_value)
             if get_abs_fps() < fps_value then
 				r1, g1, b1 = 255, 0, 0
             else 
