@@ -309,7 +309,7 @@ end
 local SCRIPT_FILE_NAME = "manualaa.lua";
 local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/manualaa.lua";
 local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/maversion.txt";
-local VERSION_NUMBER = 1;
+local VERSION_NUMBER = 2;
 
 
 local update_available = false;
