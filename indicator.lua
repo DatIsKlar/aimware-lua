@@ -38,7 +38,7 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-local VERSION_NUMBER = 4;
+local VERSION_NUMBER = 5;
 
 
 local function get_abs_fps()
@@ -430,7 +430,7 @@ end
 callbacks.Register("Draw", "drawing_stuff", drawing_stuff);
 
 
-local SCRIPT_FILE_NAME = "indicator.lua";
+local SCRIPT_FILE_NAME = GetScriptName();
 local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/indicator.lua";
 local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/indversion.txt";
 local update_link = "https://raw.githubusercontent.com/DatIsKlar/update_log-aw/master/update_log_ind"
