@@ -19,7 +19,7 @@ local Fpsvalue = gui.Checkbox(box, "Fps_value", "FPS-Value", false);
 local Fps_t = gui.Combobox(box, "Fps_t", "FPS Warning", "Off", "If below cmdrate", "If below Value");
 local fps_slider = gui.Slider(box, "Fps_slider", "FPS Warning Value", 80, 10, 144)
 local fps_res = gui.Checkbox(box, "Fps_res", "FPS Restrict", false);
-local fps_slider = gui.Slider(box, "rest_slider", "FPS Restrict Value", 144, 10, 400)
+local fps_slider_res = gui.Slider(box, "rest_slider", "FPS Restrict Value", 144, 10, 400)
 local Pingincheck = gui.Checkbox(box, "Pingin", "Ping-Indicator", false);
 local ping_val = gui.Checkbox(box, "Pingval", "Ping-Value", false);
 local ping_slider = gui.Slider(box, "Ping_slider", "Ping Warning", 40, 10, 200)
@@ -119,7 +119,7 @@ local function drawing_stuff()
     local Fps_value_ind = Fpsvalue:GetValue()
     local mode = Fps_t:GetValue()
     local fps_rest = fps_res:GetValue()
-    local fps_rest_val = fps_slider:GetValue()
+    local fps_rest_val = fps_slider_res:GetValue()
 	local ping_value1 = ping_val:GetValue()
     local aain = aa_mode:GetValue()
     if main_active then
@@ -134,10 +134,12 @@ local function drawing_stuff()
 
 
         if mode == 2 then
-            if get_abs_fps() > fps_value then
-                r1, g1, b1 = 126, 183, 50
-            elseif get_abs_fps() < (fps_value) then
-                r1, g1, b1 = 255, 0, 0
+		print(get_abs_fps())
+		print(fps_value)
+            if get_abs_fps() < fps_value then
+				r1, g1, b1 = 255, 0, 0
+            else 
+             r1, g1, b1 = 126, 183, 50
             end
         end
 
