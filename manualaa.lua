@@ -17,6 +17,7 @@ local arrow_slider = gui.Slider(box_1, "arrow_slider", "Arrow Thickness", 2, 0, 
 local arrow_slider_size_x = gui.Slider(box_1, "arrow_slider_size", "Arrow Size X", 25, 0, 25)
 local arrow_slider_size_y = gui.Slider(box_1, "arrow_slider_size", "Arrow Size Y", 17, 0, 17)
 local aarow_slider_crosshair = gui.Slider(box_1, "arrow_slider_crosshair", "Distans from Crosshair", 200, 0, 400)
+local aarow_slider_crosshair = gui.Slider(box_1, "arrow_slider_crshair", "Distans from Crosshair", 200, 0, 400)
 local time2 = 0
 local time4 = 0
 local a = 0
@@ -309,7 +310,7 @@ end
 local SCRIPT_FILE_NAME = "manualaa.lua";
 local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/manualaa.lua";
 local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/maversion.txt";
-local VERSION_NUMBER = 1;
+local VERSION_NUMBER = 2;
 
 
 local update_available = false;
