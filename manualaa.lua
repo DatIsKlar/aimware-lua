@@ -306,7 +306,7 @@ local function arrow()
         end
     end
 end
-local SCRIPT_FILE_NAME = "manualaa.lua";
+local SCRIPT_FILE_NAME = GetScriptName();
 local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/manualaa.lua";
 local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/maversion.txt";
 local VERSION_NUMBER = 3;
