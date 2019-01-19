@@ -38,7 +38,7 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-local VERSION_NUMBER = 6;
+local VERSION_NUMBER = 7;
 
 
 local function get_abs_fps()
@@ -433,7 +433,7 @@ callbacks.Register("Draw", "drawing_stuff", drawing_stuff);
 local SCRIPT_FILE_NAME = GetScriptName();
 local SCRIPT_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/indicator.lua";
 local VERSION_FILE_ADDR = "https://raw.githubusercontent.com/DatIsKlar/aimware-lua/master/indversion.txt";
-local update_link = "https://raw.githubusercontent.com/DatIsKlar/update_log-aw/master/update_log_ind"
+local update_link = "raw.githubusercontent.com/DatIsKlar/update_log-aw/master/update_log_ind";
 
 
 local update_available = false;
@@ -453,8 +453,9 @@ function indicator_draw_event()
         else
             local new_version_content = http.Get(SCRIPT_FILE_ADDR);
             local old_script = file.Open(SCRIPT_FILE_NAME, "w");
-			local update_log = http.Get(update_link)
-			print(update_log)
+			print("Open CS console for update log");
+			client.Command("Update_Log");
+			client.Command(update_link);
             old_script:Write(new_version_content);
             old_script:Close();
             update_available = false;
@@ -466,6 +467,7 @@ function indicator_draw_event()
         draw.SetFont(update_font)
         draw.Color(255, 0, 0, 255);
         draw.Text(0, 0, "[Indicator] An update has automatically been downloaded, reload the script");
+		draw.Text(0,20,"[Indicator] Check Console for update log");
         return;
     end
 
