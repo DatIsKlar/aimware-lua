@@ -21,6 +21,7 @@ local fps_slider = gui.Slider(box, "Fps_slider", "FPS Warning Value", 80, 10, 14
 local fps_res = gui.Checkbox(box, "Fps_res", "FPS Restrict", false);
 local fps_slider = gui.Slider(box, "rest_slider", "FPS Restrict Value", 144, 10, 400)
 local Pingincheck = gui.Checkbox(box, "Pingin", "Ping-Indicator", false);
+local ping_val = gui.Checkbox(box, "Pingval", "Ping-Velue", false);
 local ping_slider = gui.Slider(box, "Ping_slider", "Ping Warning", 40, 10, 200)
 local Flagcheck = gui.Checkbox(box, "Falg", "FLAG-Mode", false);
 local Flagvalue = gui.Checkbox(box, "Falg_value", "FLAG-Value", false)
@@ -119,6 +120,7 @@ local function drawing_stuff()
     local mode = Fps_t:GetValue()
     local fps_rest = fps_res:GetValue()
     local fps_rest_val = fps_slider:GetValue()
+	local ping_value1 = ping_val:GetValue()
     local aain = aa_mode:GetValue()
     if main_active then
 
@@ -223,12 +225,17 @@ local function drawing_stuff()
                     end
                 end
 
-
+				if ping_value1 then
+                ping = ping 				
+				
+				else 
+				ping = ""				
+				end
 
 
                 --draw.Color(p, i, n, fakea)
                 --draw.SetFont(pingfont)
-                TextAdd("PING " .. spike .. fill .. ping, p, i, n, fakea);
+                TextAdd("PING " .. spike .. fill .. ping, p, i, n, fakea); 
                 --draw.Text(20, pos2, "PING " .. ping)
                 --draw.SetFont(normal)
             end
