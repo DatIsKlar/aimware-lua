@@ -38,7 +38,7 @@ local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false)
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7")
 local Standing = false
 local Moving = false
-local VERSION_NUMBER = 8;
+local VERSION_NUMBER = 9;
 
 
 local function get_abs_fps()
@@ -287,25 +287,9 @@ local function drawing_stuff()
                 end
 
                 if Flagin then
-
-                    if (fakelag_mode == 0) then
-                        fakelagmode = "Factor"
-
-                    elseif (fakelag_mode == 1) then
-                        fakelagmode = "Switch"
-
-                    elseif (fakelag_mode == 2) then
-                        fakelagmode = "Adaptive"
-
-                    elseif (fakelag_mode == 3) then
-                        fakelagmode = "Random"
-
-                    elseif (fakelag_mode == 4) then
-                        fakelagmode = "Peek"
-                    elseif (fakelag_mode == 5) then
-                        fakelagmode = "Rapid-Peek"
-                    end
-
+				
+				mode_flag = {"Factor","Switch","Adaptive","Random","Peek","Rapid-Peek"}
+				fakelagmode = mode_flag[fakelag_mode+1]
                 else
                     fakelagmode = ""
                 end
