@@ -287,7 +287,7 @@ function override_in()
     end
 end
 
-local function drawing_stuff()
+local function check_in()
     local Pingin = Pingincheck:GetValue();
     local Fpsin = Fpsincheck:GetValue();
     local overrideactive = Overridecheck:GetValue();
@@ -440,5 +440,5 @@ function indicator_draw_event()
 end
 
 print("credit for auto-update goes to ShadyRetard")
-callbacks.Register("Draw", "drawing_stuff", drawing_stuff);
+callbacks.Register("Draw", "check_in", check_in);
 callbacks.Register("Draw", "indicator_draw_event", indicator_draw_event);
