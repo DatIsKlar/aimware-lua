@@ -203,17 +203,6 @@ function flag_in()
 
     if (fakelag_enable) then
 
-        if flag_standing and Standing then
-            f, l, g = 126, 183, 50;
-        elseif flag_standing == false and Standing then
-            f, l, g = 255, 0, 0;
-        end
-        if flag_moving == 1 and Moving then
-            f, l, g = 255, 0, 0;
-        elseif flag_moving ~= 1 and Moving then
-            f, l, g = 126, 183, 50;
-        end
-
         if flag_moving == 0 then
             if flag_standing == false and Standing then
                 f, l, g = 255, 0, 0;
