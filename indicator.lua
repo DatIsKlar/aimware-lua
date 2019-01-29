@@ -5,7 +5,7 @@ local aimware_font = draw.CreateFont("Arial", 21, 380);
 local rifk7_font = draw.CreateFont("Fixedsys", 26, 300);
 local normal = draw.CreateFont("Arial");
 local vis_main = gui.Reference('VISUALS', "MISC", "Assistance");
-local box = gui.Groupbox(vis_main, "Indicator", 0, 350, 213, 700);
+local box = gui.Groupbox(vis_main, "Indicator", 0, 350, 213, 750);
 local Fpsincheck = gui.Checkbox(box, "Fpsin", "FPS-Indicator", false);
 local Fpsvalue = gui.Checkbox(box, "Fps_value", "FPS-Value", false);
 local Fps_t = gui.Combobox(box, "Fps_t", "FPS Warning", "Off", "If below cmdrate", "If below Value");
@@ -15,8 +15,8 @@ local fps_slider_res = gui.Slider(box, "rest_slider", "FPS Restrict Value", 144,
 local Pingincheck = gui.Checkbox(box, "Pingin", "Ping-Indicator", false);
 local ping_val = gui.Checkbox(box, "Pingval", "Ping-Value", false);
 local ping_slider = gui.Slider(box, "Ping_slider", "Ping Warning", 40, 10, 200);
-local Flagcheck = gui.Checkbox(box, "Falg", "FLAG-Mode", false);
-local Flagvalue = gui.Checkbox(box, "Falg_value", "FLAG-Value", false);
+local Flagcheck = gui.Checkbox(box, "Falg", "FLAG-Indicator", false);
+local Flag_combo = gui.Combobox(box, 'Flag_combo', " Flag-Show Mode","Off", "Mode", "Value", "Both");
 local Overridecheck = gui.Checkbox(box, "Override_key", "Override-Inidcator", false);
 local speedcheck = gui.Checkbox(box, "Speed", "Speed-Indicator", false);
 local aa_mode = gui.Checkbox(box, "aa", "Desync-Indicator", false);
@@ -38,7 +38,7 @@ local update_available = false;
 local version_check_done = false;
 local update_downloaded = false;
 local update_font = draw.CreateFont("Arial", 15, 15);
-local VERSION_NUMBER = 10;
+local VERSION_NUMBER = 11;
 
 
 function get_abs_fps()
@@ -192,14 +192,14 @@ end
 
 function flag_in()
     local Flagin = Flagcheck:GetValue();
+	local flag_mode = Flag_combo:GetValue();
     local fakelag_value = gui.GetValue("msc_fakelag_value");
     local fakelagmode = "";
     local fakelag_enable = gui.GetValue("msc_fakelag_enable");
     local fakelag_mode = gui.GetValue("msc_fakelag_mode");
     local flag_moving = gui.GetValue("msc_fakelag_style");
-    local fill1 = "";
     local flag_standing = gui.GetValue("msc_fakelag_standing");
-    local fakelag_value_ind = Flagvalue:GetValue();
+	
 
     if (fakelag_enable) then
 
@@ -242,9 +242,7 @@ function flag_in()
         f, l, g = 255, 0, 0;
     end
 
-    if Flagin then
-
-
+    if flag_mode == 1 or flag_mode == 3 then
         mode_flag = { "Factor", "Switch", "Adaptive", "Random", "Peek", "Rapid-Peek" };
         fakelagmode = mode_flag[fakelag_mode + 1];
     else
@@ -252,10 +250,10 @@ function flag_in()
     end
 
     fill1 = "";
-    if fakelag_value_ind and Flagin == false then
+    if flag_mode == 2 then
         fakelag_val = fakelag_value;
         fill1 = "";
-    elseif fakelag_value_ind and Flagin then
+    elseif flag_mode == 3 then
         fakelag_val = fakelag_value;
         fill1 = " ";
     else
@@ -290,10 +288,9 @@ end
 
 function override_in()
     local override_key = gui.GetValue("rbot_resolver_override");
-    if input.IsButtonDown(override_key) then
-        local resolver = gui.GetValue("rbot_resolver");
+	local resolver = gui.GetValue("rbot_resolver");
+    if input.IsButtonDown(override_key) then  
         if resolver then
-
             TextAdd("Override ", 126, 183, 50, 255);
         else
             TextAdd("Override ", 255, 0, 0, 255);
@@ -307,7 +304,6 @@ local function drawing_stuff()
     local overrideactive = Overridecheck:GetValue();
     local main_active = gui.GetValue("esp_active");
     local Flagin = Flagcheck:GetValue();
-    local fakelag_value_ind = Flagvalue:GetValue();
     local override_key = gui.GetValue("rbot_resolver_override");
     local Alive = false;
     local speed_active = speedcheck:GetValue();
@@ -333,7 +329,7 @@ local function drawing_stuff()
 
 
 
-            if (Flagin or fakelag_value_ind) then
+            if Flagin then
                 flag_in();
             end
 
