@@ -16,7 +16,7 @@ local Pingincheck = gui.Checkbox(box, "Pingin", "Ping-Indicator", false);
 local ping_val = gui.Checkbox(box, "Pingval", "Ping-Value", false);
 local ping_slider = gui.Slider(box, "Ping_slider", "Ping Warning", 40, 10, 200);
 local Flagcheck = gui.Checkbox(box, "Falg", "FLAG-Indicator", false);
-local Flag_combo = gui.Combobox(box, 'Flag_combo', " Flag-Show Mode","Off", "Mode", "Value", "Both");
+local Flag_combo = gui.Combobox(box, 'Flag_combo', " Flag-Show Mode", "Off", "Mode", "Value", "Both");
 local Overridecheck = gui.Checkbox(box, "Override_key", "Override-Inidcator", false);
 local speedcheck = gui.Checkbox(box, "Speed", "Speed-Indicator", false);
 local aa_mode = gui.Checkbox(box, "aa", "Desync-Indicator", false);
@@ -28,6 +28,8 @@ local active_gap = gui.Checkbox(box, "active_gap", "Custom-Gap", false);
 local dis_slider = gui.Slider(box, "dis_slider", "Gap", 25, 0, 100);
 local shadowcheck = gui.Checkbox(box, "Ocheck_shadow", "Text-Shadow", false);
 local theme_combo = gui.Combobox(box, 'Theme', " Font-Theme", "Skeet", "Aimware", "rifk7");
+local ref = gui.Reference('MISC', "ENHANCEMENT", "Fakelatency");
+local ping_res = gui.Checkbox(ref, "ping_res", "Auto-Restrict Fakelatency", 1);
 local Standing = false;
 local Moving = false;
 local SCRIPT_FILE_NAME = GetScriptName();
@@ -38,8 +40,9 @@ local update_available = false;
 local version_check_done = false;
 local update_downloaded = false;
 local update_font = draw.CreateFont("Arial", 15, 15);
-local VERSION_NUMBER = 11;
-
+local VERSION_NUMBER = 12;
+local Alive = false
+local ping = 0
 
 function get_abs_fps()
 
@@ -47,15 +50,20 @@ function get_abs_fps()
     return math.floor((1.0 / frame_rate) + 0.5);
 end
 
-function moving()
-    if entities.GetLocalPlayer() ~= nil then
+function entities_stuff()
+    local local_player = entities.GetLocalPlayer();
+    if local_player ~= nil then
         Alive = entities.GetLocalPlayer():IsAlive();
+        ping = entities.GetPlayerResources():GetPropInt("m_iPing", client.GetLocalPlayerIndex());
+        ping = 0;
+        return local_player;
+    else
+        ping = 0;
     end
+end
 
-
-
-    if entities.GetLocalPlayer() ~= nil then
-
+function moving()
+    if entities_stuff() then
         local LocalPlayerEntity = entities.GetLocalPlayer();
         local fFlags = LocalPlayerEntity:GetProp("m_fFlags");
 
@@ -122,8 +130,6 @@ function fps_in()
 end
 
 function ping_in()
-
-
     local fakelatency_enable = gui.GetValue("msc_fakelatency_enable");
     local fakelatency_value = gui.GetValue("msc_fakelatency_amount");
     local fakelatency = 0;
@@ -131,12 +137,6 @@ function ping_in()
     local ping_value = ping_slider:GetValue();
 
     p, i, n = 126, 183, 50;
-
-    if entities.GetPlayerResources() ~= nil then
-        ping = entities.GetPlayerResources():GetPropInt("m_iPing", client.GetLocalPlayerIndex());
-    else
-        ping = 0;
-    end
 
     if (fakelatency_enable) then
         fakelatency = math.ceil(fakelatency_value * 1000);
@@ -192,14 +192,14 @@ end
 
 function flag_in()
     local Flagin = Flagcheck:GetValue();
-	local flag_mode = Flag_combo:GetValue();
+    local flag_mode = Flag_combo:GetValue();
     local fakelag_value = gui.GetValue("msc_fakelag_value");
     local fakelagmode = "";
     local fakelag_enable = gui.GetValue("msc_fakelag_enable");
     local fakelag_mode = gui.GetValue("msc_fakelag_mode");
     local flag_moving = gui.GetValue("msc_fakelag_style");
     local flag_standing = gui.GetValue("msc_fakelag_standing");
-	
+
 
     if (fakelag_enable) then
 
@@ -277,8 +277,8 @@ end
 
 function override_in()
     local override_key = gui.GetValue("rbot_resolver_override");
-	local resolver = gui.GetValue("rbot_resolver");
-    if input.IsButtonDown(override_key) then  
+    local resolver = gui.GetValue("rbot_resolver");
+    if input.IsButtonDown(override_key) then
         if resolver then
             TextAdd("Override ", 126, 183, 50, 255);
         else
@@ -294,17 +294,15 @@ local function check_in()
     local main_active = gui.GetValue("esp_active");
     local Flagin = Flagcheck:GetValue();
     local override_key = gui.GetValue("rbot_resolver_override");
-    local Alive = false;
     local speed_active = speedcheck:GetValue();
-    if entities.GetLocalPlayer() ~= nil then
-        Alive = entities.GetLocalPlayer():IsAlive();
-    end
     local Fpsin = Fpsincheck:GetValue();
-
     local aain = aa_mode:GetValue();
+	local ping_rest = ping_res:GetValue();
+    local fakelatency_enable = gui.GetValue("msc_fakelatency_enable")
+	local fakelatency_value = math.floor(gui.GetValue("msc_fakelatency_amount")*1000);
 
     if main_active then
-
+        entities_stuff()
         if Fpsin then
             fps_in();
         end
@@ -336,6 +334,12 @@ local function check_in()
             end
         end
     end
+
+
+if fakelatency_enable and fakelatency_value > 199 and ping_rest then 
+gui.SetValue("msc_fakelatency_amount",0.2);
+end
+	
     TextDrawing();
 end
 
@@ -348,7 +352,7 @@ end
 
 function TextDrawing()
 
-    sw, sh = draw.GetScreenSize();
+    local sw, sh = draw.GetScreenSize();
     local a_gap = active_gap:GetValue();
     local a_x = active_x:GetValue();
     local a_y = active_y:GetValue();
@@ -442,3 +446,4 @@ end
 print("credit for auto-update goes to ShadyRetard")
 callbacks.Register("Draw", "check_in", check_in);
 callbacks.Register("Draw", "indicator_draw_event", indicator_draw_event);
+	
