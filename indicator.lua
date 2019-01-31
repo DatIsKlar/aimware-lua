@@ -42,7 +42,6 @@ local update_downloaded = false;
 local update_font = draw.CreateFont("Arial", 15, 15);
 local VERSION_NUMBER = 12;
 local Alive = false
-local ping = 0
 
 function get_abs_fps()
 
@@ -53,12 +52,8 @@ end
 function entities_stuff()
     local local_player = entities.GetLocalPlayer();
     if local_player ~= nil then
-        Alive = entities.GetLocalPlayer():IsAlive();
-        ping = entities.GetPlayerResources():GetPropInt("m_iPing", client.GetLocalPlayerIndex());
-        ping = 0;
+        Alive = entities.GetLocalPlayer():IsAlive();  
         return local_player;
-    else
-        ping = 0;
     end
 end
 
@@ -135,6 +130,8 @@ function ping_in()
     local fakelatency = 0;
     local ping_value1 = ping_val:GetValue();
     local ping_value = ping_slider:GetValue();
+	if entities_stuff() then
+	ping = entities.GetPlayerResources():GetPropInt("m_iPing", client.GetLocalPlayerIndex());
 
     p, i, n = 126, 183, 50;
 
@@ -158,12 +155,12 @@ function ping_in()
     fill = "";
     local spike = "";
     if fakelatency_enable then
-        if ping < 199 then
+        if ping < 200 then
             spike = "Spike";
             fill = " ";
         end
     end
-    if ping > 199 then
+    if ping > 200 then
         spike = "Warning";
         fill = " ";
         p, i, n = 255, 0, 0;
@@ -186,8 +183,10 @@ function ping_in()
     else
         ping = "";
     end
+	
 
     TextAdd("PING " .. spike .. fill .. ping, p, i, n, 255);
+	end
 end
 
 function flag_in()
