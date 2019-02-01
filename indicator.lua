@@ -40,7 +40,7 @@ local update_available = false;
 local version_check_done = false;
 local update_downloaded = false;
 local update_font = draw.CreateFont("Arial", 15, 15);
-local VERSION_NUMBER = 12;
+local VERSION_NUMBER = 13;
 local Alive = false
 
 function get_abs_fps()
@@ -136,7 +136,7 @@ function ping_in()
     p, i, n = 126, 183, 50;
 
     if (fakelatency_enable) then
-        fakelatency = math.ceil(fakelatency_value * 1000);
+        fakelatency = math.floor(fakelatency_value * 1000);
         if ping > (fakelatency * 0.75) then
             p, i, n = 126, 183, 50;
         elseif ping < (fakelatency * 0.75) and ping > (fakelatency * 0.5) then
@@ -253,25 +253,31 @@ end
 
 function aa_in()
     local checkrage = gui.GetValue("rbot_active");
-    local mode_de = { "Off", "Still", "Balance", "Stretch", "Jitter" };
+    local mode_de = { "", "Still", "Balance", "Stretch", "Jitter" };
     local stand_de = gui.GetValue("rbot_antiaim_stand_desync");
     local move_de = gui.GetValue("rbot_antiaim_move_desync");
-    de = "Desync ";
-
+	local stand_treshold = gui.GetValue("rbot_antiaim_stand_velocity");
+    
+ if checkrage then 
+ 
+ 
     if Standing and stand_de > 0 then
         mode_d = mode_de[stand_de + 1];
         r2, g2, b2, a2 = 245, 198, 10, 255;
-    elseif Moving and move_de > 0 then
+    elseif Moving and move_de > 0 and moving() > stand_treshold then
         mode_d = mode_de[move_de + 1];
         r2, g2, b2, a2 = 245, 198, 10, 255;
     elseif Standing and stand_de == 0 then
         r2, g2, b2, a2 = 255, 0, 0, 255;
-        mode_d = "Off";
-    elseif Moving and move_de == 0 then
+        mode_d = mode_de[stand_de + 1];
+    elseif Moving and move_de == 0 and moving() > stand_treshold then
         r2, g2, b2, a2 = 255, 0, 0, 255;
-        mode_d = "Off";
+        mode_d = mode_de[move_de + 1];
     end
-    TextAdd(de .. mode_d, r2, g2, b2, a2);
+	else 
+	r2, g2, b2, a2 = 255, 0, 0, 255;
+	end
+    TextAdd("Desync " .. mode_d, r2, g2, b2, a2);
 end
 
 function override_in()
