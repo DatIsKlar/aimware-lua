@@ -40,7 +40,7 @@ local update_available = false;
 local version_check_done = false;
 local update_downloaded = false;
 local update_font = draw.CreateFont("Arial", 15, 15);
-local VERSION_NUMBER = 13;
+local VERSION_NUMBER = 14;
 local Alive = false
 
 function get_abs_fps()
@@ -283,8 +283,11 @@ end
 function override_in()
     local override_key = gui.GetValue("rbot_resolver_override");
     local resolver = gui.GetValue("rbot_resolver");
+	local checkrage = gui.GetValue("rbot_active");
+	local aimbot_check = gui.GetValue("rbot_enable")
+	
     if input.IsButtonDown(override_key) then
-        if resolver then
+        if resolver and checkrage and aimbot_check then
             TextAdd("Override ", 126, 183, 50, 255);
         else
             TextAdd("Override ", 255, 0, 0, 255);
@@ -305,6 +308,7 @@ local function check_in()
 	local ping_rest = ping_res:GetValue();
     local fakelatency_enable = gui.GetValue("msc_fakelatency_enable")
 	local fakelatency_value = math.floor(gui.GetValue("msc_fakelatency_amount")*1000);
+	maxunlag = tonumber(client.GetConVar("sv_maxunlag"));
 
     if main_active then
         entities_stuff()
@@ -341,8 +345,9 @@ local function check_in()
     end
 
 
-if fakelatency_enable and fakelatency_value > 199 and ping_rest then 
-gui.SetValue("msc_fakelatency_amount",0.2);
+if fakelatency_enable and fakelatency_value > (maxunlag*1000) and ping_rest then
+
+gui.SetValue("msc_fakelatency_amount",maxunlag);
 end
 	
     TextDrawing();
