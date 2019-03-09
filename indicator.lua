@@ -40,7 +40,7 @@ local update_available = false;
 local version_check_done = false;
 local update_downloaded = false;
 local update_font = draw.CreateFont("Arial", 15, 15);
-local VERSION_NUMBER = 14;
+local VERSION_NUMBER = 15;
 local Alive = false
 
 function get_abs_fps()
@@ -257,27 +257,34 @@ function aa_in()
     local stand_de = gui.GetValue("rbot_antiaim_stand_desync");
     local move_de = gui.GetValue("rbot_antiaim_move_desync");
 	local stand_treshold = gui.GetValue("rbot_antiaim_stand_velocity");
-    
+     mode_d = ""
  if checkrage then 
- 
- 
+
     if Standing and stand_de > 0 then
         mode_d = mode_de[stand_de + 1];
         r2, g2, b2, a2 = 245, 198, 10, 255;
-    elseif Moving and move_de > 0 and moving() > stand_treshold then
+    elseif move_de > 0 and moving() > stand_treshold then      
         mode_d = mode_de[move_de + 1];
         r2, g2, b2, a2 = 245, 198, 10, 255;
-    elseif Standing and stand_de == 0 then
-        r2, g2, b2, a2 = 255, 0, 0, 255;
+	elseif stand_de > 0 and moving() < stand_treshold then
+		 r2, g2, b2, a2 = 245, 198, 10, 255;
         mode_d = mode_de[stand_de + 1];
-    elseif Moving and move_de == 0 and moving() > stand_treshold then
-        r2, g2, b2, a2 = 255, 0, 0, 255;
-        mode_d = mode_de[move_de + 1];
-    end
+    else
+	r2, g2, b2, a2 = 255, 0, 0, 255;
+	end
 	else 
 	r2, g2, b2, a2 = 255, 0, 0, 255;
 	end
     TextAdd("Desync " .. mode_d, r2, g2, b2, a2);
+	
+	
+	--[[   elseif Standing and stand_de == 0 then
+        r2, g2, b2, a2 = 255, 0, 0, 255;
+        mode_d = mode_de[stand_de + 1];
+    elseif move_de == 0 and moving() > stand_treshold then
+        r2, g2, b2, a2 = 255, 0, 0, 255;
+        mode_d = mode_de[move_de + 1]; ]]--
+	
 end
 
 function override_in()
@@ -338,7 +345,7 @@ local function check_in()
                 override_in();
             end
 
-            if speed_active and Alive then
+            if speed_active and Alive and entities_stuff() ~= nil then
                 TextAdd("Velocity " .. math.floor(moving() + 0.5), 255, 255, 0, 255);
             end
         end
