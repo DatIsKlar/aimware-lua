@@ -1,0 +1,78 @@
+local array_list = {"Pistols","SMGS","Rifles","Shotguns","Snipers","Knife","Nades"}--array with the checkbox names
+local box = gui.Groupbox(gui.Reference("MISC", "AUTOMATION", "Autostrafer"), "Per Weapon Strafe Disabler")
+for i = 1,#array_list do --creating gui stuff
+    local checkbox_strafe_weapon = gui.Checkbox(box,array_list[i].."_strafe",array_list[i],false)
+end
+local slider_strafe_dist = gui.Slider(box,"Weapon_Strafe_Disabler_dist","Max Distance",0,0,1000)
+
+local adaptive_weapons = {   --list of to get checkbox names
+    [array_list[5]] = { 5 },
+    [array_list[1]] = { 1 },
+    [array_list[4]] = {4 },
+    [array_list[3]] = { 3},
+    [array_list[2]] = { 2},
+    [array_list[7]] = { 9},
+    [array_list[6]] = { 0},
+    ["false"] = {},
+}
+
+local function table_contains(table, item)
+    for i = 1, #table do
+        if table[i] == item then
+            return true
+        end
+    end
+    return false
+end
+
+local function find_var(value) 
+    for k, v in pairs(adaptive_weapons) do
+        if table_contains(v, value) then
+            return k
+        end
+    end
+end
+
+local function player_jump(weapon)
+    local jumpshot = false 
+    local plocal_player = entities.GetLocalPlayer()
+    if entities.GetLocalPlayer() == nil then
+        return
+    end
+    local c_dist = slider_strafe_dist:GetValue()
+    local players = entities.FindByClass("CCSPlayer") 
+    for i = 1, #players do
+        local player = players[i]
+        if (player:GetIndex() ~= client.GetLocalPlayerIndex() and player:IsAlive() and player:GetTeamNumber() ~= entities.GetLocalPlayer():GetTeamNumber()) then
+            local dist = vector.Distance({player:GetAbsOrigin()},{entities.GetLocalPlayer():GetHitboxPosition(0)} )
+            local a = 1
+            if (dist <= c_dist) then
+                jumpshot_w = true
+                a = 0
+            break
+            end
+            if (dist >= c_dist) and a == 1 then 
+                jumpshot_w = false
+            end
+        end
+    end
+    return jumpshot_w
+end
+
+local function set_damage()
+    if entities.GetLocalPlayer() ~= nil then
+        local weapon = entities.GetLocalPlayer():GetWeaponType()
+        local checkbox = find_var(weapon) --finding the correct checkbox for the weapon type
+        if checkbox ~= nil then -- check if checkbox is active
+            local active = gui.GetValue(checkbox.."_strafe")
+            player_jump(weapon)
+            if active and player_jump(weapon) then 
+                gui.SetValue("msc_autostrafer_enable", 0)
+            else
+                gui.SetValue("msc_autostrafer_enable", 1)
+            end
+        end
+    end
+end
+
+callbacks.Register("Draw", "set_damage", set_damage);
