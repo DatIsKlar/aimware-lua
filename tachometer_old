@@ -141,7 +141,7 @@ callbacks.Register("Draw", function()
             return
         end
         draw.Color(color_chocked:GetValue())
-        cirlce(xs / 2, ys, radius - (******"))), 50)
+        cirlce(xs, ys, radius - (slider_text__secondary:GetValue() * 3), 1, math.floor(slider_size:GetValue() + 0.5), (count_chokedpackets * 100 / gui.GetValue("msc_fakelag_limit") + 1) * 0.75)
     end
     
 
