@@ -7,9 +7,10 @@ local checkbox = gui.Checkbox(box, "checkbox_tachometer", "Tachometer", false)
 local checkbox_text = gui.Checkbox(box, "checkbox_text_tachomter", "Tachometer Text Primary", false)
 local checkbox_text_secondary = gui.Checkbox(box, "checkbox_text_secondary_tachomter", "Tachometer Text Secondary", false)
 local checkbox_choked = gui.Checkbox(box, "checkbox_chocked_tachometer", "Show Choked", false)
+local show_chockes_sep = gui.Checkbox(box, "checkbox_chocked_tachometer_sep", "Show Choked Separately", false)
 local slider = gui.Slider(box, "slider_tachometer", "Tachometer Radius", "250", "0", "800")
 local slider_text = gui.Slider(box, "slider_text_tachometer", "Tachometer Text Primary Size", "50", "10", "200")
-local slider_text__secondary = gui.Slider(box, "slider_text__secondary_tachometer", "Tachometer Text Secondary Size", "17", "12", "20")
+local slider_text__secondary = gui.Slider(box, "slider_text__secondary_tachometer", "Tachometer Text Secondary Size", "17", "10", "30")
 local slider_size = gui.Slider(box, "slider_size_tachometer", "Tachometer Line Size", "1", "0", "5")
 local color_background = gui.ColorEntry("color_background_tachometer", "Background Tachometer", 0, 0, 0, 255)
 local color_line = gui.ColorEntry("color_line_tachometer", "Outline Tachometer", 255, 255, 255, 255)
@@ -105,7 +106,7 @@ local function drag_function(x, y, r)
     return x, y
 end
 
-
+local xmax,ymax = 0,0
 local xs, ys = pos_x:GetValue(), pos_y:GetValue()
 callbacks.Register("Draw", function()
 
@@ -117,6 +118,7 @@ callbacks.Register("Draw", function()
     local player, alive = entities_stuff()
     local speed = Velocity()
     local max_speed = tonumber(client.GetConVar("sv_maxspeed")) + 40
+    xmax,ymax = draw.GetScreenSize()
 
     if input.IsButtonDown(1) then
         xs, ys = drag_function(pos_x:GetValue(), pos_y:GetValue(), radius)
@@ -174,10 +176,33 @@ callbacks.Register("Draw", function()
         if player == nil or alive == false then
             return
         end
-        draw.Color(color_chocked:GetValue())
-        cirlce(xs, ys, radius - (slider_text__secondary:GetValue() * 3), 1, math.floor(slider_size:GetValue() + 0.5), (count_chokedpackets * 100 / gui.GetValue("msc_fakelag_limit") + 1) * 0.75)
+
+        if show_chockes_sep:GetValue() then
+            draw.Color(color_background:GetValue())
+            draw.FilledCircle(xs+radius*1.67, ys+radius*0.25, radius/1.5)
+            draw.SetFont(draw.CreateFont("Arial", math.floor((slider_text:GetValue() + 0.5)/3), 600))
+            local text_x_c, text_y_c = draw.GetTextSize( "Chocked" )
+            draw.Color(color_text_primary:GetValue())
+            draw.Text((xs+radius*1.67)-text_x_c/2, (ys+radius*0.25)-text_y_c/2, "Chocked")
+            draw.Color(color_text_secondary:GetValue())
+            text(xs+radius*1.67, ys+radius*0.25, radius/1.5 - 20, 1, 2, 75, gui.GetValue("msc_fakelag_limit") + 1, math.floor(slider_text__secondary:GetValue() + 0.5))
+            draw.Color(color_chocked:GetValue())
+            cirlce(xs+radius*1.67, ys+radius*0.25, radius/1.5, 1, math.floor(slider_size:GetValue() + 0.5), (count_chokedpackets * 100 / gui.GetValue("msc_fakelag_limit") + 1) * 0.75)
+
+        else
+            draw.Color(color_chocked:GetValue())
+            cirlce(xs, ys, radius - (slider_text__secondary:GetValue() * 3), 1, math.floor(slider_size:GetValue() + 0.5), (count_chokedpackets * 100 / gui.GetValue("msc_fakelag_limit") + 1) * 0.75)
+        end
     end
 end)
+
+local function set_center()
+    local radius = slider:GetValue()
+    xs = xmax/2 - (radius*1.67)/2
+    pos_x:SetValue(xs)
+end
+
+local button = gui.Button( box, "Set Center", set_center )
 
 
 callbacks.Register("CreateMove", function(cmd)
