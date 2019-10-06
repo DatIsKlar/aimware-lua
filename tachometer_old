@@ -1,0 +1,162 @@
+---CREDITS TO RADICAL MARIO FOR CIRLCE DRAWING 
+---CREDITS TO LUIZ FOR CHOCKED SUTFF
+
+local ref = gui.Reference("VISUALS", "MISC", "Assistance")
+local box = gui.Groupbox(ref, "Tachometer")
+local checkbox = gui.Checkbox(box, "checkbox_tachometer", "Tachometer", false)
+local checkbox_text = gui.Checkbox(box, "checkbox_text_tachomter", "Tachometer Text Primary", false)
+local checkbox_text_secondary = gui.Checkbox(box, "checkbox_text_secondary_tachomter", "Tachometer Text Secondary", false)
+local checkbox_choked = gui.Checkbox(box, "checkbox_chocked_tachometer", "Show Choked", false)
+local slider = gui.Slider(box, "slider_tachometer", "Tachometer Radius", "250", "0", "800")
+local slider_text = gui.Slider(box, "slider_text_tachometer", "Tachometer Text Primary Size", "50", "10", "200")
+local slider_text__secondary = gui.Slider(box, "slider_text__secondary_tachometer", "Tachometer Text Secondary Size", "17", "12", "20")
+local slider_size = gui.Slider(box, "slider_size_tachometer", "Tachometer Line Size", "1", "0", "5")
+local color_background = gui.ColorEntry("color_background_tachometer", "Background Tachometer", 0, 0, 0, 255)
+local color_line = gui.ColorEntry("color_line_tachometer", "Outline Tachometer", 255, 255, 255, 255)
+local color_text_primary = gui.ColorEntry("color_text_primary_tachometer", "Speed Primary Tachometer", 255, 0, 0, 255)
+local color_text_secondary = gui.ColorEntry("color_text_secondary_tachometer", "Speed Secondary Tachometer", 255, 0, 0, 255)
+local color_chocked = gui.ColorEntry("color_choked_tachometer", "Show Chocked Tachometer", 255, 255, 255, 255)
+
+local Choking = false
+local ChokeStart = 0
+
+
+local function entities_stuff()
+    local local_player = entities.GetLocalPlayer();
+    local alive = false
+    if local_player ~= nil then
+        alive = entities.GetLocalPlayer():IsAlive();
+    end
+    return local_player, alive;
+end
+
+local function Velocity()
+
+    local player, alive = entities_stuff()
+
+    if player == nil or alive == false then
+        return
+    end
+
+    local LocalPlayerEntity = entities.GetLocalPlayer();
+    local fFlags = LocalPlayerEntity:GetProp("m_fFlags");
+
+    local VelocityX = LocalPlayerEntity:GetPropFloat("localdata", "m_vecVelocity[0]");
+    local VelocityY = LocalPlayerEntity:GetPropFloat("localdata", "m_vecVelocity[1]");
+
+    local Velocity = math.sqrt(VelocityX ^ 2 + VelocityY ^ 2);
+    return Velocity;
+end
+
+local function cirlce(x, y, radius, quality, thickness, percentage)
+    for i = 0, thickness, quality do
+        local radius = radius + i
+        local Screen_X_Line_Old, Screen_Y_Line_Old
+        for rot = 0, 3.6 * percentage, quality do
+            local rot_temp = math.rad(rot)
+            local Screen_X_Line, Screen_Y_Line
+            local Screen_X_Line, Screen_Y_Line = -(radius) * math.cos(rot_temp) + x, -(radius) * math.sin(rot_temp) + y
+            if Screen_X_Line ~= nil and Screen_X_Line_Old ~= nil then
+                draw.Line(Screen_X_Line, Screen_Y_Line, Screen_X_Line_Old, Screen_Y_Line_Old)
+            end
+            Screen_X_Line_Old, Screen_Y_Line_Old = Screen_X_Line, Screen_Y_Line
+        end
+    end
+end
+
+
+local function text(x, y, radius, quality, thickness, percentage, max_speed, textsize)
+    for rot = 0, (3.6 * percentage), 10 do
+        local rot_temp = math.rad(rot)
+        local Screen_X_Line, Screen_Y_Line
+        local Screen_X_Line, Screen_Y_Line = -(radius) * math.cos(rot_temp) + x, -(radius) * math.sin(rot_temp) + y
+        if Screen_X_Line ~= nil then
+            draw.SetFont(draw.CreateFont("Arial", textsize, 200))
+            local w_1, h_1 = draw.GetTextSize(math.floor(max_speed * rot / 180))
+            draw.Text(Screen_X_Line - w_1 / 2, Screen_Y_Line - h_1 + 2 / 6, math.floor(max_speed * rot / 180))
+        end
+    end
+end
+
+callbacks.Register("Draw", function()
+
+    if not checkbox:GetValue() then
+        return
+    end
+
+    local radius = slider:GetValue()
+
+    local xs, ys = draw.GetScreenSize()
+    local player, alive = entities_stuff()
+    local speed = Velocity()
+    local max_speed = tonumber(client.GetConVar("sv_maxspeed"))
+    
+    if player == nil or alive == false then
+        return
+    end
+
+    if client.GetConVar("sv_enablebunnyhopping") == "1" then
+        if client.GetConVar("sv_accelerate_use_weapon_speed") == "1" and tonumber(client.GetConVar("sv_maxvelocity")) > 5000 then
+            max_speed = 5000
+        else
+            max_speed = tonumber(client.GetConVar("sv_maxvelocity"))
+        end
+    end
+
+
+    local r_r, g_r, b_r, a_r = color_background:GetValue()
+
+    if a_r > 0 then
+        draw.Color(color_background:GetValue())
+        draw.FilledCircle(xs / 2, ys, radius)
+    end
+
+
+    local r_c, g_c, b_c, a_c = color_line:GetValue()
+    if a_c ~= 0 then
+        draw.Color(color_line:GetValue())
+        cirlce(xs / 2, ys, radius, 1, math.floor(slider_size:GetValue() + 0.5), 50)
+    end
+
+
+    draw.Color(color_text_secondary:GetValue())
+    if checkbox_text_secondary:GetValue() then
+        text(xs / 2, ys, radius - 20, 1, 2, 50, max_speed, math.floor(slider_text__secondary:GetValue() + 0.5))
+    end
+    cirlce(xs / 2, ys, radius, 1, math.floor(slider_size:GetValue() + 0.5), (speed * 100 / max_speed) / 2 +0.5)
+
+    draw.SetFont(draw.CreateFont("Arial", math.floor(slider_text:GetValue() + 0.5), 600))
+    local w_1, h_1 = draw.GetTextSize(math.floor(speed))
+    if checkbox_text:GetValue() then
+        draw.Color(color_text_primary:GetValue())
+        draw.Text(xs / 2 - w_1 / 2, ys - radius / 4 - h_1 / 1.5, math.floor(speed + 0.5))
+    end
+    
+    if checkbox_choked:GetValue() then
+        local count_chokedpackets = 0
+        if Choking then
+            count_chokedpackets = globals.TickCount() - (ChokeStart - 1)    
+        end
+        if player == nil or alive == false then
+            return
+        end
+        draw.Color(color_chocked:GetValue())
+        cirlce(xs / 2, ys, radius - (******"))), 50)
+    end
+    
+
+end)
+
+
+callbacks.Register("CreateMove", function(cmd)
+    if cmd:GetSendPacket() then
+        if Choking then
+            Choking = false
+        end
+    else
+        if not Choking then
+            Choking = true
+            ChokeStart = globals.TickCount()
+        end
+    end
+end)
