@@ -17,8 +17,8 @@ local color_text_primary = gui.ColorEntry("color_text_primary_tachometer", "Spee
 local color_text_secondary = gui.ColorEntry("color_text_secondary_tachometer", "Speed Secondary Tachometer", 255, 0, 0, 255)
 local color_chocked = gui.ColorEntry("color_choked_tachometer", "Show Chocked Tachometer", 255, 255, 255, 255)
 local xs, ys
-local pos_x = gui.Slider(box, "pos_x_tachometer", "Clock x position", 1000, 0, 4000);
-local pos_y = gui.Slider(box, "pos_y_tachomer", "Clock y position", 1000, 0, 3000);
+local pos_x = gui.Slider(box, "pos_x_tachometer", "Tachometer x position", 1000, 0, 4000);
+local pos_y = gui.Slider(box, "pos_y_tachomer", "Tachometer y position", 1000, 0, 3000);
 
 
 
