@@ -1,0 +1,101 @@
+
+local isActive = gui.Checkbox(gui.Reference("MISC", "ENHANCEMENT", "Fakelag"), "msc_fakelag_onshot", "Fakelag On Shot", false);
+local fakelagTime = gui.Slider(gui.Reference("MISC", "ENHANCEMENT", "FAKELAG"), "msc_fakelag_onshot_time", "On Shot Time (in ms)", 50, 1, 1000);
+local attack = false;
+local time = 0;
+
+local checkbox_winodw = gui.Checkbox(gui.Reference("MISC", "ENHANCEMENT", "Fakelag"),"msc_fakelag_onshot_custom","Custom Values for Weapon",false);
+local ref = gui.Window("window_onshot_fakelag","Fakelag On Shot",600,600,300,420);
+ref:SetActive(false);
+local combo_box = gui.Multibox( ref, "On shot fakelag active" );
+local box_slider = gui.Groupbox( ref, "On shot fakelag time",15,70);
+local weapon_list = {"autosniper","sniper","scout","revolver","pistol","rifle"};
+local gui_ref = gui.Reference("MENU");
+
+for i = 1,6 do
+local checkbox_active = gui.Checkbox(combo_box, weapon_list[i].."_onshot_fakelag_active","Fakelag on shot "..weapon_list[i] , false);
+local slider_fakelag = gui.Slider(box_slider, weapon_list[i].."_onshot_fakelag_time", "Fakelag time "..weapon_list[i], 50, 1, 1000);
+end
+
+
+
+local adaptive_weapons = {
+
+    ["autosniper_onshot_fakelag"] = { 11, 38 },
+    ["sniper_onshot_fakelag"] = { 9 },
+    ["scout_onshot_fakelag"] = { 40 },
+    ["revolver_onshot_fakelag"] = { 64,1 },
+    ["pistol_onshot_fakelag"] = { 2, 3, 4, 30, 32, 36, 61, 63 },
+    ["rifle_onshot_fakelag"] = { 7, 8, 10, 13, 16, 39, 60 },
+    ["false"] = {},
+}
+
+local function table_contains(table, item) 
+    for i = 1, #table do
+        if table[i] == item then
+            return true
+        end
+    end
+    return false
+end
+
+local function find_key(value) 
+    for k, v in pairs(adaptive_weapons) do
+        if table_contains(v, value) then
+            return k
+        end
+    end
+end
+
+callbacks.Register("CreateMove", function(cmd)
+
+    local fakelag_time = fakelagTime:GetValue()/1000;
+    local active = isActive:GetValue()
+    local player = entities.GetLocalPlayer();
+
+    if(player == nil)then 
+        return;
+    end
+
+    if(checkbox_winodw:GetValue() and gui_ref:IsActive() )then 
+        ref:SetActive(true);
+    else
+        ref:SetActive(false);
+    end
+
+    if(not active)then
+        return;
+    end
+    
+    if(weapontyp == 9)then 
+        return;
+    end
+
+    
+    local weapontyp = player:GetWeaponType();
+    local weapon = player:GetWeaponID();
+    local id = find_key(weapon);
+    local active_type = false;
+
+    if(id ~= nil)then
+        active_type = gui.GetValue(id.."_active");
+        if(active_type)then
+            fakelag_time = gui.GetValue(id.."_time")/1000;
+        end
+    end
+
+
+    local IN_ATTACK = 1 << 0;
+    local IN_ATTACK2 = 1 << 11;
+    
+    if( (   (cmd:GetButtons() & IN_ATTACK)==IN_ATTACK) or  (   (cmd:GetButtons() & IN_ATTACK2)==IN_ATTACK2) )then    
+         attack = true;
+         time = globals.RealTime();
+    end
+
+    if(attack and (time+fakelag_time > globals.RealTime()))then
+        cmd:SetSendPacket(false);
+    elseif(attack and (time+ fakelag_time< globals.RealTime()))then 
+        attack = false;
+    end
+end)
