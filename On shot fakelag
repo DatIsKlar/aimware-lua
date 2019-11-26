@@ -1,6 +1,6 @@
 
 local isActive = gui.Checkbox(gui.Reference("MISC", "ENHANCEMENT", "Fakelag"), "msc_fakelag_onshot", "Fakelag On Shot", false);
-local fakelagTime = gui.Slider(gui.Reference("MISC", "ENHANCEMENT", "FAKELAG"), "msc_fakelag_onshot_time", "On Shot Time (in ms)", 50, 1, 1000);
+local fakelagTime = gui.Slider(gui.Reference("MISC", "ENHANCEMENT", "FAKELAG"), "msc_fakelag_onshot_time", "On Shot Time (in ms)", 50, 0, 1000);
 local attack = false;
 local time = 0;
 
@@ -12,12 +12,89 @@ local box_slider = gui.Groupbox( ref, "On shot fakelag time",15,70);
 local weapon_list = {"autosniper","sniper","scout","revolver","pistol","rifle"};
 local gui_ref = gui.Reference("MENU");
 
-for i = 1,6 do
-local checkbox_active = gui.Checkbox(combo_box, weapon_list[i].."_onshot_fakelag_active","Fakelag on shot "..weapon_list[i] , false);
-local slider_fakelag = gui.Slider(box_slider, weapon_list[i].."_onshot_fakelag_time", "Fakelag time "..weapon_list[i], 50, 1, 1000);
+
+for i = 1,#weapon_list do
+local checkbox_active = gui.Checkbox(combo_box, weapon_list[i].."_onshot_fakelag_active",weapon_list[i]:upper() , false);
+local slider_fakelag = gui.Slider(box_slider, weapon_list[i].."_onshot_fakelag_time", ("Fakelag time "..weapon_list[i]):upper(), 50, 0, 1000);
+end
+local combo_box_1 = gui.Multibox( gui.Reference("MISC", "ENHANCEMENT", "Fakelag"), "On shot fakelag Trigger" );
+local triggers_array ={"On Slowwalk","On Fakeduck","While Standing","While moving","In Air"};
+
+for i = 1 ,#triggers_array do 
+    local checkbox_trigger = gui.Checkbox(combo_box_1,"onshot_fakelag_trigger_"..i,triggers_array[i]:upper() , false);
 end
 
 
+function entities_stuff()
+    local local_player = entities.GetLocalPlayer();
+    if local_player ~= nil then
+        Alive = entities.GetLocalPlayer():IsAlive();  
+        return local_player;
+    end
+end
+
+function moving()
+    if entities_stuff() then
+        local LocalPlayerEntity = entities.GetLocalPlayer();
+        local fFlags = LocalPlayerEntity:GetProp("m_fFlags");
+
+        local VelocityX = LocalPlayerEntity:GetPropFloat("localdata", "m_vecVelocity[0]");
+        local VelocityY = LocalPlayerEntity:GetPropFloat("localdata", "m_vecVelocity[1]");
+
+        local Velocity = math.sqrt(VelocityX ^ 2 + VelocityY ^ 2);
+        local Standing;
+        local Moving;
+        local InAir;
+        local ON_GROUND = 1<<0
+
+        
+        if (ON_GROUND & fFlags) == ON_GROUND then 
+            InAir = false;
+            if Velocity <=1 then
+                Standing = true;
+            else
+                Standing = false;
+            end
+            if Velocity > 1 then 
+                Moving = true;  
+        else
+            Moving = false;
+        end
+        else
+            InAir = true;
+        end
+
+        return Standing,Moving, InAir;
+    end
+end
+
+local function is_down(button)
+    if button == 0 then 
+        return;
+    else
+        return input.IsButtonDown( button );
+    end
+end
+
+local function check_trigger()
+    local standing, moving, air = moving();
+    local active = false;
+   
+    if moving and is_down(gui.GetValue("msc_slowwalk")) and gui.GetValue("onshot_fakelag_trigger_1") then
+        active =  true;
+    elseif moving and gui.GetValue("onshot_fakelag_trigger_4") and not is_down(gui.GetValue("msc_slowwalk")) then 
+        active = true;
+    elseif is_down(gui.GetValue("rbot_antiaim_fakeduck")) and gui.GetValue("onshot_fakelag_trigger_2") then 
+        active = true;
+    elseif standing and gui.GetValue("onshot_fakelag_trigger_3") then 
+        active = true;
+    elseif air and gui.GetValue("onshot_fakelag_trigger_5") then 
+        active=true;
+    else
+        active= false;
+    end
+        return active;
+end
 
 local adaptive_weapons = {
 
@@ -51,16 +128,15 @@ callbacks.Register("CreateMove", function(cmd)
 
     local fakelag_time = fakelagTime:GetValue()/1000;
     local active = isActive:GetValue()
-    local player = entities.GetLocalPlayer();
-
-    if(player == nil)then 
-        return;
-    end
 
     if(checkbox_winodw:GetValue() and gui_ref:IsActive() )then 
         ref:SetActive(true);
     else
         ref:SetActive(false);
+    end
+
+    if(entities_stuff() == nil)then 
+        return;
     end
 
     if(not active)then
@@ -71,9 +147,12 @@ callbacks.Register("CreateMove", function(cmd)
         return;
     end
 
-    
-    local weapontyp = player:GetWeaponType();
-    local weapon = player:GetWeaponID();
+    if not check_trigger() then 
+        return;
+    end
+
+    local weapontyp = entities_stuff():GetWeaponType();
+    local weapon = entities_stuff():GetWeaponID();
     local id = find_key(weapon);
     local active_type = false;
 
@@ -93,9 +172,10 @@ callbacks.Register("CreateMove", function(cmd)
          time = globals.RealTime();
     end
 
-    if(attack and (time+fakelag_time > globals.RealTime()))then
+    if(attack and (time+fakelag_time >= globals.RealTime()))then
         cmd:SetSendPacket(false);
-    elseif(attack and (time+ fakelag_time< globals.RealTime()))then 
+        print("hi")
+    elseif(attack and (time+ fakelag_time <= globals.RealTime()))then 
         attack = false;
     end
 end)
