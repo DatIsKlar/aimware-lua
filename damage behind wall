@@ -1,19 +1,31 @@
-local ref = gui.Tab(gui.Reference("Ragebot"), "behindwall", "Damage Behind Wall")
-local save_fps = gui.Checkbox(ref, "savefps", "Savefps", false)
-local box_auto = gui.Groupbox(ref, "Autosniper")
-local box_sniper = gui.Groupbox(ref, "Sniper")
-local box_scout = gui.Groupbox(ref, "Scaut")
-local box_revolver = gui.Groupbox(ref, "Heavy Pistol")
-local box_pistol = gui.Groupbox(ref, "Pistol")
-local box_rifle = gui.Groupbox(ref, "Rifle")
-save_fps:SetDescription("Increased Performance but decreases detection")
-local box = { box_auto, box_sniper, box_scout, box_revolver, box_pistol, box_rifle }
+local ref = gui.Reference("Ragebot", "Accuracy", "Weapon")
+
 local weapon_list = { "asniper", "sniper", "scout", "hpistol", "pistol", "rifle" }
-for i = 1, 6 do
-    local rbot_autosniper_mindamage_active = gui.Checkbox(box[i], weapon_list[i] .. ".mindmg.active", "Damage Behind Wall", false)
-    local rbot_autosniper_mindamage_2 = gui.Slider(box[i], weapon_list[i] .. ".mindmg.2", "Damage Visible", 0, 0, 100);
-    local rbot_autosniper_mindamage_1 = gui.Slider(box[i], weapon_list[i] .. ".mindmg.1", "Damage behind Wall", 0, 0, 100);
-end
+
+
+local rbot_autosniper_mindamage_2 = gui.Slider(ref, weapon_list[1] .. ".mindmg.2", "Damage Visible", 0, 0, 100);
+local rbot_autosniper_mindamage_1 = gui.Slider(ref, weapon_list[1] .. ".mindmg.1", "Damage behind Wall", 0, 0, 100);
+
+local rbot_sniper_mindamage_2 = gui.Slider(ref, weapon_list[2] .. ".mindmg.2", "Damage Visible", 0, 0, 100);
+local rbot_sniper_mindamage_1 = gui.Slider(ref, weapon_list[2] .. ".mindmg.1", "Damage behind Wall", 0, 0, 100);
+
+
+local rbot_scout_mindamage_2 = gui.Slider(ref, weapon_list[3] .. ".mindmg.2", "Damage Visible", 0, 0, 100);
+local rbot_scout_mindamage_1 = gui.Slider(ref, weapon_list[3] .. ".mindmg.1", "Damage behind Wall", 0, 0, 100);
+
+
+local rbot_revolver_mindamage_2 = gui.Slider(ref, weapon_list[4] .. ".mindmg.2", "Damage Visible", 0, 0, 100);
+local rbot_revolver_mindamage_1 = gui.Slider(ref, weapon_list[4] .. ".mindmg.1", "Damage behind Wall", 0, 0, 100);
+
+
+local rbot_pistol_mindamage_2 = gui.Slider(ref, weapon_list[5] .. ".mindmg.2", "Damage Visible", 0, 0, 100);
+local rbot_pistol_mindamage_1 = gui.Slider(ref, weapon_list[5] .. ".mindmg.1", "Damage behind Wall", 0, 0, 100);
+
+
+local rbot_rifle_mindamage_2 = gui.Slider(ref, weapon_list[6] .. ".mindmg.2", "Damage Visible", 0, 0, 100);
+local rbot_rifle_mindamage_1 = gui.Slider(ref, weapon_list[6] .. ".mindmg.1", "Damage behind Wall", 0, 0, 100);
+
+
 
 
 local adaptive_weapons = {
@@ -21,10 +33,33 @@ local adaptive_weapons = {
     ["asniper.mindmg"] = { 11, 38 },
     ["sniper.mindmg"] = { 9 },
     ["scout.mindmg"] = { 40 },
-    ["hpistol.mindmg"] = { 64,1 },
+    ["hpistol.mindmg"] = { 64, 1 },
     ["pistol.mindmg"] = { 2, 3, 4, 30, 32, 36, 61, 63 },
-    ["rifle.mindmg"] = { 7, 8, 10, 13, 16, 39, 60 },    
+    ["rifle.mindmg"] = { 7, 8, 10, 13, 16, 39, 60 },
     ["false"] = {},
+}
+
+
+local vars = {
+    -- see line 219
+    [rbot_autosniper_mindamage_2] = { 11, 38 },
+    [rbot_sniper_mindamage_2] = { 9 },
+    [rbot_scout_mindamage_2] = { 40 },
+    [rbot_revolver_mindamage_2] = { 64, 1 },
+    [rbot_pistol_mindamage_2] = { 2, 3, 4, 30, 32, 36, 61, 63 },
+    [rbot_rifle_mindamage_2] = { 7, 8, 10, 13, 16, 39, 60 },
+    [false] = {},
+}
+
+local vars_2 = {
+    -- see line 219
+    [rbot_autosniper_mindamage_1] = { 11, 38 },
+    [rbot_sniper_mindamage_1] = { 9 },
+    [rbot_scout_mindamage_1] = { 40 },
+    [rbot_revolver_mindamage_1] = { 64, 1 },
+    [rbot_pistol_mindamage_1] = { 2, 3, 4, 30, 32, 36, 61, 63 },
+    [rbot_rifle_mindamage_1] = { 7, 8, 10, 13, 16, 39, 60 },
+    [false] = {},
 }
 
 local function table_contains(table, item) -- see line 219
@@ -36,10 +71,36 @@ local function table_contains(table, item) -- see line 219
     return false
 end
 
+
 local function find_key(value) -- see line 219
     for k, v in pairs(adaptive_weapons) do
         if table_contains(v, value) then
             return k
+        end
+    end
+end
+
+local function set_vis(value) -- see line 219
+    for k, v in pairs(vars) do
+        if table_contains(v, value) then
+            if k~= false then 
+            k:SetInvisible(false)
+            end
+        else
+            if k ~= false then 
+            k:SetInvisible(true)
+        end
+        end
+    end
+    for k, v in pairs(vars_2) do
+        if table_contains(v, value) then
+            if k~= false then 
+            k:SetInvisible(false)
+            end
+        else
+            if k ~= false then 
+            k:SetInvisible(true)
+        end
         end
     end
 end
@@ -66,9 +127,6 @@ local function is_vis()
     local is_vis = false
     local players = entities.FindByClass("CCSPlayer")
     local fps = 4
-    if save_fps:GetValue() then
-        fps = 0
-    end
     for i, player in pairs(players) do
         if player:GetTeamNumber() ~= entities.GetLocalPlayer():GetTeamNumber() and player:IsPlayer() and entities_check() ~= nil and player:IsAlive() then
             for i = 0, 4 do
@@ -92,7 +150,7 @@ local function is_vis()
                         v.y = v.y
                     end
 
-                    local c = engine.TraceLine(pPlayer.x, pPlayer.y, pPlayer.z, v.x, v.y, v.z, 1)
+                    local c = (engine.TraceLine(pPlayer, v, 0x1)).contents
                     if c == 0 then
                         is_vis = true
                         break
@@ -105,24 +163,22 @@ local function is_vis()
 end
 
 local function set_damage()
-
     if entities_check() then
         local weapon = entities_check():GetWeaponID()
-        local slider = find_key(weapon) --finding mindamage var
+        local slider = find_key(weapon) --finding mindamage var  ["asniper.mindmg"] = { 11, 38 },
+        set_vis(weapon)
         if slider ~= nil then
-            local slider_invis = ("rbot.behindwall." .. slider .. ".1") -- getting the var name of the check boxes/sliders
-            local slider_vis = ("rbot.behindwall." .. slider .. ".2")
-            local active = gui.GetValue(("rbot.behindwall." .. slider .. ".active"))
-            if active then
-                is_vis()
-                if slider ~= false then -- makes sure only support weapon is selected
-                    if is_vis() then
-                        local damage = gui.GetValue(slider_vis) --setting damage
-                        gui.SetValue("rbot.accuracy.weapon." .. slider, damage)
-                    else
-                        local damage = gui.GetValue(slider_invis)
-                        gui.SetValue("rbot.accuracy.weapon." .. slider, damage)
-                    end
+
+            local slider_invis = ("rbot.accuracy.weapon." .. slider .. ".1") -- getting the var name of the check boxes/sliders
+            local slider_vis = ("rbot.accuracy.weapon." .. slider .. ".2")
+            is_vis()
+            if slider ~= false then -- makes sure only support weapon is selected
+                if is_vis() then
+                    local damage = gui.GetValue(slider_vis) --setting damage
+                    gui.SetValue("rbot.accuracy.weapon." .. slider, damage)
+                else
+                    local damage = gui.GetValue(slider_invis)
+                    gui.SetValue("rbot.accuracy.weapon." .. slider, damage)
                 end
             end
         end
