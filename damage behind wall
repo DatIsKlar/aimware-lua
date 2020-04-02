@@ -52,7 +52,7 @@ local vars_2 = {
     [false] = {},
 }
 
-local function table_contains(table, item) -- see line 219
+local function table_contains(table, item)
     for i = 1, #table do
         if table[i] == item then
             return true
@@ -62,7 +62,7 @@ local function table_contains(table, item) -- see line 219
 end
 
 
-local function find_key(value) -- see line 219
+local function find_key(value) 
     for k, v in pairs(adaptive_weapons) do
         if table_contains(v, value) then
             return k
@@ -70,7 +70,7 @@ local function find_key(value) -- see line 219
     end
 end
 
-local function set_vis(value) -- see line 219
+local function set_vis(value)
     for k, v in pairs(vars) do
         if table_contains(v, value) then
             if k ~= false then
