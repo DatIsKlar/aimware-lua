@@ -61,6 +61,7 @@ local function table_contains(table, item) -- see line 219
     return false
 end
 
+
 local function find_key(value) -- see line 219
     for k, v in pairs(adaptive_weapons) do
         if table_contains(v, value) then
@@ -72,24 +73,24 @@ end
 local function set_vis(value) -- see line 219
     for k, v in pairs(vars) do
         if table_contains(v, value) then
-            if k~= false then 
-            k:SetInvisible(false)
+            if k ~= false then
+                k:SetInvisible(false)
             end
         else
-            if k ~= false then 
-            k:SetInvisible(true)
-        end
+            if k ~= false then
+                k:SetInvisible(true)
+            end
         end
     end
     for k, v in pairs(vars_2) do
         if table_contains(v, value) then
-            if k~= false then 
-            k:SetInvisible(false)
+            if k ~= false then
+                k:SetInvisible(false)
             end
         else
-            if k ~= false then 
-            k:SetInvisible(true)
-        end
+            if k ~= false then
+                k:SetInvisible(true)
+            end
         end
     end
 end
@@ -102,9 +103,9 @@ local function entities_check()
         if (math.floor((entities.GetLocalPlayer():GetPropInt("m_fFlags") % 4) / 2) == 1) then
             z = 46
         else
-            z = 64 
+            z = 64
         end
-        Player.z = Player.z + z
+        Player.z = Player.z + LocalPlayer:GetPropVector("localdata", "m_vecViewOffset[0]").z
         return Player, LocalPlayer
     end
 end
@@ -148,7 +149,7 @@ local function is_vis(LocalPlayerPos)
     return is_vis
 end
 
-local function set_damage()
+callbacks.Register("Draw", function()
     local Player, LocalPlayer = entities_check()
     if LocalPlayer then
         local weapon = LocalPlayer:GetWeaponID()
@@ -168,5 +169,4 @@ local function set_damage()
             end
         end
     end
-end
-callbacks.Register("Draw", "set_damage", set_damage);
+end)
